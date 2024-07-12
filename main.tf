@@ -67,6 +67,11 @@ resource "aws_route_table_association" "private" {
   route_table_id = element(aws_route_table.private.*.id, count.index)
 }
 
+
+
+
+
+
 resource "aws_db_instance" "default" {
   allocated_storage    = 20
   storage_type         = "gp2"
@@ -109,14 +114,37 @@ resource "aws_security_group" "rds_sg" {
 
 
 
+#resource "aws_lambda_function" "my_lambda" {
+#  filename      = "s3://your-s3-bucket-name/function.zip"
+#  function_name = "my-lambda-function"
+#  handler       = "index.handler"
+#  runtime       = "nodejs20.x"  # Update this to a supported runtime like nodejs14.x or nodejs16.x
+#  role          = aws_iam_role.lambda_exec.arn
+#  source_code_hash = filebase64sha256("${path.module}/lambda/function.zip")
+#}
+
+
+
+
 resource "aws_lambda_function" "my_lambda" {
-  filename      = "${path.module}/lambda/function.zip"
-  function_name = "my-lambda-function"
-  handler       = "index.handler"
-  runtime       = "nodejs20.x"  # Update this to a supported runtime like nodejs14.x or nodejs16.x
-  role          = aws_iam_role.lambda_exec.arn
+  s3_bucket        = "amserve2" # Updated bucket name
+  s3_key           = "lambda/function.zip"
+  function_name    = "my-lambda-function"
+  handler          = "index.handler"
+  runtime          = "nodejs20.x"
+  role             = aws_iam_role.lambda_exec.arn
   source_code_hash = filebase64sha256("${path.module}/lambda/function.zip")
+  environment {
+    variables = {
+      RDS_HOST     = aws_db_instance.default.address
+      RDS_USER     = "admin"
+      RDS_PASSWORD = "password"
+      RDS_DB       = "mydatabase"
+    }
+  }
 }
+
+
 
 
 
