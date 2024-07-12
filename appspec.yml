@@ -1,0 +1,17 @@
+version: 0.0
+Resources:
+  - myLambdaFunction:
+      Type: AWS::Lambda::Function
+      Properties:
+        Name: "my-lambda-function"
+        Alias: "live"
+        CurrentVersion: "1"
+        TargetVersion: "2"
+hooks:
+  BeforeAllowTraffic:
+    - location: scripts/before_allow_traffic.sh
+      timeout: 300
+  AfterAllowTraffic:
+    - location: scripts/after_allow_traffic.sh
+      timeout: 300
+
