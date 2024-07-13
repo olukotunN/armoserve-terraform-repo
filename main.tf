@@ -110,22 +110,6 @@ resource "aws_security_group" "rds_sg" {
 }
 
 
-
-
-
-
-#resource "aws_lambda_function" "my_lambda" {
-#  filename      = "s3://your-s3-bucket-name/function.zip"
-#  function_name = "my-lambda-function"
-#  handler       = "index.handler"
-#  runtime       = "nodejs20.x"  # Update this to a supported runtime like nodejs14.x or nodejs16.x
-#  role          = aws_iam_role.lambda_exec.arn
-#  source_code_hash = filebase64sha256("${path.module}/lambda/function.zip")
-#}
-
-
-
-
 resource "aws_lambda_function" "my_lambda" {
   s3_bucket        = "amserve2" # Updated bucket name
   s3_key           = "lambda/function.zip"
